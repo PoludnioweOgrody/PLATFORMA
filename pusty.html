@@ -28,7 +28,7 @@
         
         .app-container {
             display: grid;
-            grid-template-columns: 400px 1fr;
+            grid-template-columns: 420px 1fr;
             gap: 20px;
             padding: 20px;
             max-width: 1400px;
@@ -112,7 +112,7 @@
             letter-spacing: 0.5px;
         }
         
-        input[type="text"], select { 
+        input[type="text"] { 
             width: 100%; 
             padding: 12px; 
             border: 1px solid var(--border-color); 
@@ -124,7 +124,7 @@
             transition: border-color 0.3s;
         }
         
-        input[type="text"]:focus, select:focus {
+        input[type="text"]:focus {
             outline: none;
             border-color: var(--primary-light);
             background-color: #fff;
@@ -140,11 +140,14 @@
             position: relative; 
             overflow: hidden;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            flex-grow: 1; /* Pozwala edytorowi rozciągnąć się, gdy brakuje innych opcji */
+            margin-bottom: 20px;
         }
         
         #editor {
             width: 100%; 
-            min-height: 200px; 
+            min-height: 250px; 
+            flex-grow: 1;
             padding: 15px; 
             box-sizing: border-box; 
             outline: none; 
@@ -189,6 +192,20 @@
         .gmail-toolbar .tool-italic { font-style: italic; }
         .gmail-toolbar .tool-underline { text-decoration: underline; }
 
+        /* Przycisk dodawania kontenera */
+        .btn-add-container {
+            font-family: 'Segoe UI', sans-serif !important;
+            font-size: 13px !important;
+            font-weight: 600 !important;
+            background-color: #edf2f7 !important;
+            color: var(--primary-dark) !important;
+            margin-left: auto; /* Przesuwa do prawej */
+        }
+        .btn-add-container:hover {
+            background-color: var(--primary-light) !important;
+            color: white !important;
+        }
+
         /* Menu pop-up dla kolorów i emotikonów */
         .dropdown-container { position: relative; }
         .dropdown-menu {
@@ -226,11 +243,6 @@
             transition: background 0.1s;
         }
         .emoji-item:hover { background: #edf2f7; }
-        
-        .emoji-grid::-webkit-scrollbar { width: 6px; }
-        .emoji-grid::-webkit-scrollbar-track { background: #f8fafc; border-radius: 4px; }
-        .emoji-grid::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 4px; }
-        .emoji-grid::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
 
         /* Przycisk kopiowania */
         .btn-copy {
@@ -274,6 +286,14 @@
             max-width: 650px;
         }
 
+        /* Styl dla edytowalnej stopki po prawej stronie */
+        #view-footer[contenteditable="true"]:focus {
+            outline: 2px dashed #cbd5e0;
+            outline-offset: 4px;
+            border-radius: 4px;
+            background-color: #fbfdfb;
+        }
+
         /* Responsywność */
         @media (max-width: 1024px) {
             .app-container {
@@ -305,14 +325,14 @@
 
         <div class="control-group">
             <label>Nagłówek / Powitanie</label>
-            <input type="text" id="input-name" value="Szanowny Panie / Szanowna Pani," oninput="updatePreview()">
+            <input type="text" id="input-name" value="Drodzy członkowie" oninput="updatePreview()">
         </div>
 
-        <div class="control-group">
+        <div class="control-group" style="display:flex; flex-direction:column; flex-grow:1;">
             <label>Treść wiadomości</label>
             <div class="editor-container">
                 <div id="editor" contenteditable="true" oninput="updatePreview()">
-                    Dziękujemy za kontakt ze Stowarzyszeniem. W nawiązaniu do naszej rozmowy, przesyłamy niezbędne informacje dotyczące Państwa sprawy. Prosimy o zapoznanie się z poniższymi szczegółami.
+                    Tu wprowadź treść...
                 </div>
                 
                 <div class="gmail-toolbar">
@@ -346,25 +366,10 @@
 
                     <button onmousedown="event.preventDefault()" onclick="execCmd('insertUnorderedList')" title="Lista punktowana">≡</button>
                     <button onmousedown="event.preventDefault()" onclick="execCmd('removeFormat')" title="Wyczyść formatowanie">T×</button>
+                    
+                    <button class="btn-add-container" onmousedown="event.preventDefault()" onclick="insertContainer()" title="Wstaw wyróżniony kontener">[+] Ramka</button>
                 </div>
             </div>
-        </div>
-
-        <div class="control-group">
-            <label style="display: flex; align-items: center; cursor: pointer; text-transform: none; color: var(--text-main); font-weight: normal; font-size: 14px;">
-                <input type="checkbox" id="show-signature" onchange="updatePreview()" checked style="margin-right: 12px; width: 18px; height: 18px; accent-color: var(--primary-dark);"> 
-                Dołącz przycisk z linkiem do strony / wizytówki
-            </label>
-        </div>
-
-        <div class="control-group">
-            <label>Podpis / Przedstawiciel</label>
-            <select id="input-advisor" onchange="updatePreview()">
-                <option value="Zarząd Stowarzyszenia|https://www.google.com">Zarząd Stowarzyszenia</option>
-                <option value="Biuro Obsługi Mieszkańców|https://www.google.com">Biuro Obsługi Mieszkańców</option>
-                <option value="Jan Kowalski - Prezes Zarządu|https://www.google.com">Jan Kowalski - Prezes Zarządu</option>
-                <option value="Sekretariat|https://www.google.com">Sekretariat</option>
-            </select>
         </div>
 
         <button class="btn-copy" id="copy-btn" onclick="copyEmail()">KOPIUJ TREŚĆ DO MAILA</button>
@@ -383,14 +388,20 @@
                             </tr>
                             <tr>
                                 <td style="padding: 40px 45px;">
-                                    <h1 id="view-name" style="font-size: 20px; color: #1e5a44; margin: 0 0 25px 0; font-weight: 700;">Szanowny Panie / Szanowna Pani,</h1>
+                                    <h1 id="view-name" style="font-size: 20px; color: #1e5a44; margin: 0 0 25px 0; font-weight: 700;">Drodzy członkowie,</h1>
                                     
-                                    <div id="view-content" style="font-size: 15px; color: #333333; line-height: 1.7; margin-bottom: 30px; font-family: 'Segoe UI', 'Noto Color Emoji', Arial, sans-serif;">
+                                    <div id="view-content" style="font-size: 15px; color: #333333; line-height: 1.7; font-family: 'Segoe UI', 'Noto Color Emoji', Arial, sans-serif;">
                                         </div>
 
-                                    <div id="view-signature-container" align="center" style="margin-top: 35px; padding-top: 30px; border-top: 1px solid #e2e8f0;">
-                                        <a id="view-link" href="#" style="display: inline-block; padding: 14px 35px; background-color: #1e5a44; color: #ffffff !important; text-decoration: none; font-weight: bold; border-radius: 8px; font-size: 15px;">Nasza Strona</a>
+                                    <div id="view-footer" contenteditable="true" style="margin-top: 30px; padding-top: 25px; border-top: 1px solid #e2e8f0; font-size: 14px; color: #333333; line-height: 1.5; font-family: 'Segoe UI', Arial, sans-serif;">
+                                        <p style="margin: 0; color: #718096;">--</p>
+                                        <p style="margin: 4px 0 0 0; color: #718096;">Z poważaniem</p>
+                                        <p style="margin: 6px 0 0 0; font-weight: 600; color: #1a202c; font-size: 15px;">Zarząd Stowarzyszenia</p>
+                                        <p style="margin: 2px 0 0 0; color: #1e5a44; font-weight: 600;">Mieszkańcy Południowych Ogrodów</p>
+                                        <p style="margin: 4px 0 0 0;"><a href="mailto:mieszkancy.poludnioweogrody@gmail.com" style="color: #1e5a44; text-decoration: none;">mieszkancy.poludnioweogrody@gmail.com</a></p>
+                                        <p style="margin: 2px 0 0 0; color: #718096; font-size: 13px;">REGON: 544172895</p>
                                     </div>
+
                                 </td>
                             </tr>
                         </table>
@@ -427,7 +438,6 @@
     editorEl.addEventListener('mouseleave', saveSelection);
 
     // --- GENEROWANIE KOLORÓW ---
-    // Dodano do palety kolory Stowarzyszenia! (#1e5a44, #589a4b, #f4a236)
     const colors = [
         '#1e5a44', '#589a4b', '#f4a236', '#000000', '#434343', '#666666', '#999999', 
         '#cccccc', '#efefef', '#cc0000', '#e69138', '#f1c232', '#6aa84f', '#45818e', 
@@ -453,10 +463,6 @@
         '🤔','🤨','😐','😑','😶','🙄','😏','😣','😥','😮','🤐','😯','😪','😫','😴','😌','😛','😜','😝','🤤','😒','😓',
         '😔','😕','🙃','🤑','😲','☹️','🙁','😖','😞','😟','😤','😢','😭','😦','😧','😨','😩','🤯','😬','😰','😱','🥵',
         '🥶','😳','🤪','😵','😡','😠','🤬','😷','🤒','🤕','🤢','🤮','🤧','😇','🤠','🤡','🤥','🤫','🤭','🧐','🤓',
-        '🤲','👐','🙌','👏','🤝','👍','👎','👊','✊','🤛','🤜','🤞','✌️','🤟','🤘','👌','👈','👉','👆','👇','☝️','✋',
-        '🤚','🖐','🖖','👋','🤙','💪','🖕','✍️','🙏',
-        '🔴','🟠','🟡','🟢','🔵','🟣','⚫','⚪','🟤','🟥','🟧','🟨','🟩','🟦','🟪','⬛','⬜','🟫',
-        '❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝',
         '✅','❌','❎','➕','➖','➗','❓','❔','❕','❗','⭕',
         '💼','📈','📉','📊','📋','📅','📆','📇','📁','📂','📃','📄','🧮','📎','🔗','✂️','🗑️','📌','📍',
         '📞','☎️','📠','📧','✉️','📩','📨','📬','📮','🏠','🏢','🏦','💰','🪙','💴','💵','💶','💷','💸','💳','🧾',
@@ -510,28 +516,51 @@
         updatePreview();
     }
 
+    // Wstawianie specjalnego kontenera w treści edytora
+    function insertContainer() {
+        if (document.activeElement !== editorEl) {
+            editorEl.focus();
+            restoreSelection();
+        }
+        
+        // Kod HTML ramki
+        const containerHtml = `
+            <br>
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8faf8; border-left: 4px solid #1e5a44; border-radius: 0 6px 6px 0; margin-bottom: 20px; margin-top: 10px;">
+                <tr>
+                    <td style="padding: 18px 20px;">
+                        <p style="margin: 0;"><em>Wpisz treść wyróżnioną...</em></p>
+                    </td>
+                </tr>
+            </table>
+            <br>
+        `;
+        
+        document.execCommand('insertHTML', false, containerHtml);
+        saveSelection();
+        updatePreview();
+    }
+
     function updatePreview() {
         const name = document.getElementById('input-name').value;
         const content = editorEl.innerHTML;
-        const advisorData = document.getElementById('input-advisor').value.split('|');
-        const showSig = document.getElementById('show-signature').checked;
 
-        // Obsługa przecinka w powitaniu
         let formattedName = name.trim();
         if (formattedName && !formattedName.endsWith(',')) {
             formattedName += ',';
         }
         document.getElementById('view-name').textContent = formattedName;
-        
         document.getElementById('view-content').innerHTML = content;
-        document.getElementById('view-link').href = advisorData[1] || '#';
-        document.getElementById('view-signature-container').style.display = showSig ? 'block' : 'none';
     }
 
     function copyEmail() {
         const container = document.getElementById('copy-container');
         const btn = document.getElementById('copy-btn');
+        const footer = document.getElementById('view-footer');
         
+        // Zabezpieczenie przez kopiowaniem atrybutu "contenteditable"
+        if(footer) footer.removeAttribute('contenteditable');
+
         const range = document.createRange();
         range.selectNode(container);
         window.getSelection().removeAllRanges();
@@ -549,7 +578,6 @@
                 }, 2000);
             });
         } catch (err) {
-            // Fallback dla starszych przeglądarek
             document.execCommand('copy');
             btn.textContent = '✅ SKOPIOWANO!';
             btn.classList.add('success');
@@ -558,7 +586,11 @@
                 btn.classList.remove('success');
             }, 2000);
         }
+        
         window.getSelection().removeAllRanges();
+        
+        // Przywrócenie możliwości edycji po skopiowaniu
+        if(footer) footer.setAttribute('contenteditable', 'true');
     }
 
     // Inicjalizacja podglądu
