@@ -125,6 +125,14 @@
             width: 100%;
         }
 
+        /* Subtelny styl informujący, że pole jest edytowalne */
+        [contenteditable="true"]:focus {
+            outline: 2px dashed #cbd5e0;
+            outline-offset: 4px;
+            border-radius: 4px;
+            background-color: #fbfdfb; /* Bardzo delikatne rozjaśnienie tła przy edycji */
+        }
+
         @media (max-width: 600px) {
             .top-nav { flex-direction: column; }
             #email-preview { padding: 10px; }
@@ -150,7 +158,7 @@
             <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f4; padding: 30px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
                 <tr>
                     <td align="center">
-                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); overflow: hidden; text-align: left;">
+                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" contenteditable="true" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); overflow: hidden; text-align: left;">
                             <tr>
                                 <td style="background-color: #2e5a44; padding: 25px 35px; text-align: center;">
                                     <span style="color: #a3cfbb; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; display: block; margin-bottom: 6px;">Oficjalny komunikat</span>
@@ -181,19 +189,19 @@
                                     
                                     <ul style="margin-top: 0; margin-bottom: 24px; padding-left: 0; list-style-type: none;">
                                         <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
-                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> przesłanie projektu uchwały wraz z zawiadomieniem o zebraniu online,
+                                            <span contenteditable="false" style="position: absolute; left: 4px; color: #2e5a44;">•</span> przesłanie projektu uchwały wraz z zawiadomieniem o zebraniu online,
                                         </li>
                                         <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
-                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> przeprowadzenie głosowania,
+                                            <span contenteditable="false" style="position: absolute; left: 4px; color: #2e5a44;">•</span> przeprowadzenie głosowania,
                                         </li>
                                         <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
-                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> rozpoczęcie zbiórki składki celowej,
+                                            <span contenteditable="false" style="position: absolute; left: 4px; color: #2e5a44;">•</span> rozpoczęcie zbiórki składki celowej,
                                         </li>
                                         <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
-                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> podpisanie umowy z kancelarią,
+                                            <span contenteditable="false" style="position: absolute; left: 4px; color: #2e5a44;">•</span> podpisanie umowy z kancelarią,
                                         </li>
                                         <li style="margin-bottom: 0; padding-left: 24px; position: relative;">
-                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> zakończenie zbiórki i opłacenie pierwszej transzy.
+                                            <span contenteditable="false" style="position: absolute; left: 4px; color: #2e5a44;">•</span> zakończenie zbiórki i opłacenie pierwszej transzy.
                                         </li>
                                     </ul>
 
@@ -232,6 +240,12 @@
         const container = document.getElementById('copy-container');
         const btn = document.getElementById('copy-btn');
         
+        // Zabezpieczenie przed skopiowaniem z włączonym contenteditable
+        const emailTable = container.querySelector('[contenteditable="true"]');
+        if(emailTable) {
+            emailTable.removeAttribute('contenteditable');
+        }
+
         const range = document.createRange();
         range.selectNode(container);
         window.getSelection().removeAllRanges();
@@ -258,7 +272,13 @@
                 btn.classList.remove('success');
             }, 2000);
         }
+        
         window.getSelection().removeAllRanges();
+        
+        // Przywrócenie contenteditable po skopiowaniu
+        if(emailTable) {
+            emailTable.setAttribute('contenteditable', 'true');
+        }
     }
 </script>
 
