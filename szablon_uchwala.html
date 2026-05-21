@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projekt uchwały - Szablon - Mieszkańcy Południowych Ogrodów</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #1e5a44; /* Ciemna zieleń */
+            --primary-light: #589a4b; /* Jasna zieleń */
+            --accent-sun: #f4a236; /* Słoneczny pomarańczowy */
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --border-color: #e2e8f0;
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-color); 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            color: var(--text-main); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .app-container {
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* --- PANEL STEROWANIA --- */
+        .control-panel {
+            background: var(--card-bg); 
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            display: flex; 
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Nawigacja */
+        .top-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            gap: 15px; 
+        }
+        
+        .nav-btn { 
+            text-decoration: none; 
+            color: var(--primary-dark); 
+            font-weight: 600; 
+            border: 2px solid var(--primary-dark); 
+            padding: 12px 20px; 
+            border-radius: 10px; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            font-size: 14px; 
+            background-color: transparent; 
+            cursor: pointer; 
+            flex: 1;
+        }
+        
+        .nav-btn:hover { 
+            background-color: var(--primary-dark); 
+            color: white; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(30, 90, 68, 0.2);
+        }
+
+        .nav-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+        /* Przycisk kopiowania */
+        .btn-copy {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white; 
+            border: none; 
+            padding: 18px;
+            width: 100%; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            font-size: 15px; 
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(30, 90, 68, 0.3);
+        }
+        .btn-copy:hover { 
+            background: var(--accent-sun); 
+            box-shadow: 0 6px 20px rgba(244, 162, 54, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-copy.success { 
+            background: #48bb78; 
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        /* --- PODGLĄD MAILA --- */
+        #email-preview { 
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        #copy-container {
+            width: 100%;
+        }
+
+        @media (max-width: 600px) {
+            .top-nav { flex-direction: column; }
+            #email-preview { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div class="control-panel">
+        <div class="top-nav">
+            <button onclick="history.back()" class="nav-btn">&laquo; Powrót</button>
+            <a href="index.html" class="nav-btn" title="Menu Główne">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg> Menu Główne
+            </a>
+        </div>
+        <button class="btn-copy" id="copy-btn" onclick="copyEmail()">KOPIUJ TREŚĆ DO MAILA</button>
+    </div>
+
+    <div id="email-preview">
+        <div id="copy-container">
+            <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f6f4; padding: 30px 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+                <tr>
+                    <td align="center">
+                        <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); overflow: hidden; text-align: left;">
+                            <tr>
+                                <td style="background-color: #2e5a44; padding: 25px 35px; text-align: center;">
+                                    <span style="color: #a3cfbb; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; display: block; margin-bottom: 6px;">Oficjalny komunikat</span>
+                                    <h2 style="color: #ffffff; font-size: 18px; margin: 0; font-weight: 600; line-height: 1.4;">Projekt uchwały dotyczącej składki celowej na analizę prawną</h2>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 35px 35px 35px 35px; color: #2d3748; font-size: 15px; line-height: 1.62;">
+                                    <p style="margin-top: 0; margin-bottom: 20px; font-weight: 600; font-size: 16px; color: #1a202c;">Drodzy członkowie,</p>
+                                    
+                                    <p style="margin-top: 0; margin-bottom: 16px;">Chcielibyśmy poinformować, że jesteśmy na etapie finalizowania ustaleń z kancelarią prawną dotyczącą przygotowania analizy aktów notarialnych oraz dokumentacji związanej z funkcjonowaniem naszego osiedla.</p>
+                                    
+                                    <p style="margin-top: 0; margin-bottom: 24px;">Zakres opinii prawnej ma obejmować m.in. Analizę dokumentów, odpowiedzi na pytania mieszkańców oraz przedstawienie rekomendacji dalszych działań dla mieszkańców i stowarzyszenia.</p>
+
+                                    <table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8faf8; border-left: 4px solid #2e5a44; border-radius: 0 6px 6px 0; margin-bottom: 24px;">
+                                        <tr>
+                                            <td style="padding: 18px 20px;">
+                                                <p style="margin: 0 0 10px 0;">Kancelaria przedstawiła koszt wykonania analizy w wysokości <strong>6150 zł brutto</strong>.</p>
+                                                <p style="margin: 0 0 10px 0;">Zgodnie z zasadą obowiązującą w naszym stowarzyszeniu — „jeden dom = jeden głos = jedna składka” — proponowana składka celowa wynosi <strong>146,43 zł na gospodarstwo/dom</strong>.</p>
+                                                <p style="margin: 0;">Kwota została wyliczona na podstawie obecnej liczby 42 gospodarstw objętych składką.</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <p style="margin-top: 0; margin-bottom: 24px;">Jednocześnie chcielibyśmy podkreślić, że zgodnie z regulaminem stowarzyszenia zarząd nie może podpisać umowy powodującej zobowiązanie finansowe bez wcześniejszej zgody Zebrania Członków. W związku z tym przed podpisaniem umowy konieczne będzie przeprowadzenie głosowania nad uchwałą dotyczącą składki celowej przeznaczonej na sfinansowanie opinii prawnej.</p>
+                                    
+                                    <p style="margin-top: 0; margin-bottom: 12px; font-weight: 600; color: #2e5a44;">Planowany przebieg całego procesu wygląda następująco:</p>
+                                    
+                                    <ul style="margin-top: 0; margin-bottom: 24px; padding-left: 0; list-style-type: none;">
+                                        <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
+                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> przesłanie projektu uchwały wraz z zawiadomieniem o zebraniu online,
+                                        </li>
+                                        <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
+                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> przeprowadzenie głosowania,
+                                        </li>
+                                        <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
+                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> rozpoczęcie zbiórki składki celowej,
+                                        </li>
+                                        <li style="margin-bottom: 10px; padding-left: 24px; position: relative;">
+                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> podpisanie umowy z kancelarią,
+                                        </li>
+                                        <li style="margin-bottom: 0; padding-left: 24px; position: relative;">
+                                            <span style="position: absolute; left: 4px; color: #2e5a44;">•</span> zakończenie zbiórki i opłacenie pierwszej transzy.
+                                        </li>
+                                    </ul>
+
+                                    <p style="margin-top: 0; margin-bottom: 16px;">Głosowanie zostanie przeprowadzone online. W osobnej wiadomości prześlemy termin zebrania oraz projekt uchwały Członków Stowarzyszenia z informacją o celu i wysokości zbiórki.&nbsp;</p>
+                                    
+                                    <p style="margin-top: 0; margin-bottom: 24px;">Od początku zależy nam na pełnej transparentności oraz prowadzeniu wszystkich działań zgodnie z regulaminem stowarzyszenia, dlatego cały proces chcemy przeprowadzić etapowo i z pełną informacją dla członków.</p>
+                                    
+                                    <p style="margin-top: 0; margin-bottom: 30px;">Dziękujemy za dotychczasowe zaangażowanie i aktywny udział w działaniach stowarzyszenia.</p>
+
+                                    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top: 10px;">
+                                        <tr>
+                                            <td>
+                                                <p style="margin: 0; color: #718096; font-size: 14px;">--</p>
+                                                <p style="margin: 4px 0 0 0; color: #718096; font-size: 14px;">Z poważaniem</p>
+                                                <p style="margin: 6px 0 0 0; font-weight: 600; color: #1a202c; font-size: 15px;">Zarząd Stowarzyszenia</p>
+                                                <p style="margin: 2px 0 0 0; color: #2e5a44; font-weight: 600; font-size: 14px;">Mieszkańcy Południowych Ogrodów</p>
+                                                <p style="margin: 4px 0 0 0; font-size: 14px;"><a href="mailto:mieszkancy.poludnioweogrody@gmail.com" style="color: #2e5a44; text-decoration: none;">mieszkancy.poludnioweogrody@gmail.com</a></p>
+                                                <p style="margin: 2px 0 0 0; color: #718096; font-size: 13px;">REGON: 544172895</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+            </div>
+    </div>
+
+</div>
+
+<script>
+    function copyEmail() {
+        const container = document.getElementById('copy-container');
+        const btn = document.getElementById('copy-btn');
+        
+        const range = document.createRange();
+        range.selectNode(container);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+            const blob = new Blob([container.innerHTML], { type: 'text/html' });
+            const item = new ClipboardItem({ 'text/html': blob });
+            navigator.clipboard.write([item]).then(() => {
+                btn.textContent = '✅ SKOPIOWANO!';
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.textContent = 'KOPIUJ TREŚĆ DO MAILA';
+                    btn.classList.remove('success');
+                }, 2000);
+            });
+        } catch (err) {
+            // Fallback dla starszych przeglądarek
+            document.execCommand('copy');
+            btn.textContent = '✅ SKOPIOWANO!';
+            btn.classList.add('success');
+            setTimeout(() => {
+                btn.textContent = 'KOPIUJ TREŚĆ DO MAILA';
+                btn.classList.remove('success');
+            }, 2000);
+        }
+        window.getSelection().removeAllRanges();
+    }
+</script>
+
+</body>
+</html>
