@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyniki Uchwały - Mieszkańcy Południowych Ogrodów</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600;700&family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-dark: #1e5a44; /* Ciemna zieleń */
+            --primary-light: #589a4b; /* Jasna zieleń */
+            --accent-sun: #f4a236; /* Słoneczny pomarańczowy */
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --border-color: #e2e8f0;
+        }
+
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-color); 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            color: var(--text-main); 
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 420px 1fr;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 100vh;
+        }
+
+        /* --- LEWY PANEL: EDYTOR --- */
+        #admin-panel {
+            background: var(--card-bg); 
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            display: flex; 
+            flex-direction: column;
+            height: calc(100vh - 40px);
+            position: sticky;
+            top: 20px;
+            overflow-y: auto;
+        }
+
+        .top-nav { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+            gap: 10px; 
+        }
+        
+        .nav-btn { 
+            text-decoration: none; 
+            color: var(--primary-dark); 
+            font-weight: 600; 
+            border: 2px solid var(--primary-dark); 
+            padding: 10px 15px; 
+            border-radius: 10px; 
+            transition: all 0.3s ease; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 8px; 
+            font-size: 13px; 
+            background-color: transparent; 
+            cursor: pointer; 
+            flex: 1;
+        }
+        
+        .nav-btn:hover { 
+            background-color: var(--primary-dark); 
+            color: white; 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(30, 90, 68, 0.2);
+        }
+
+        .nav-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+        .logo-container {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo-container img {
+            width: 120px;
+            height: auto;
+        }
+
+        .control-group { margin-bottom: 20px; }
+        
+        label { 
+            display: block; 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: var(--primary-light); 
+            margin-bottom: 8px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px;
+        }
+        
+        input[type="text"] { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid var(--border-color); 
+            border-radius: 10px; 
+            font-family: 'Segoe UI', sans-serif; 
+            font-size: 14px;
+            box-sizing: border-box; 
+            background-color: #f8fafc;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-light);
+            background-color: #fff;
+        }
+
+        /* Edytor narzędziowy */
+        .editor-container { 
+            border: 1px solid var(--border-color); 
+            border-radius: 12px; 
+            background: white; 
+            display: flex; 
+            flex-direction: column; 
+            position: relative; 
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+            flex-grow: 1; 
+            margin-bottom: 20px;
+        }
+        
+        #editor {
+            width: 100%; 
+            min-height: 100px; 
+            flex-grow: 1;
+            padding: 15px; 
+            box-sizing: border-box; 
+            outline: none; 
+            font-size: 14px; 
+            line-height: 1.6; 
+            overflow-y: auto; 
+            color: var(--text-main);
+            font-family: 'Segoe UI', 'Noto Color Emoji', sans-serif; 
+            background: #f9fbf9;
+            color: #666;
+            text-align: center;
+        }
+        
+        .gmail-toolbar { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            padding: 10px; 
+            background: #f8fafc; 
+            border-top: 1px solid var(--border-color); 
+            flex-wrap: wrap; 
+        }
+        
+        .gmail-toolbar > button, .dropdown-toggle {
+            background: none; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            padding: 8px 12px; 
+            font-family: "Times New Roman", Times, serif; 
+            font-size: 16px;
+            color: #4a5568; 
+            transition: all 0.2s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+        }
+        
+        .gmail-toolbar > button:hover, .dropdown-toggle:hover { 
+            background: #e2e8f0; 
+            color: var(--primary-dark);
+        }
+        
+        .gmail-toolbar .tool-bold { font-weight: bold; }
+        .gmail-toolbar .tool-italic { font-style: italic; }
+        .gmail-toolbar .tool-underline { text-decoration: underline; }
+
+        .dropdown-container { position: relative; }
+        .dropdown-menu {
+            display: none; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            margin-bottom: 10px; background: white; border: 1px solid var(--border-color); box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 12px; z-index: 9999; padding: 15px; width: max-content;
+        }
+        .dropdown-menu.active { display: block; }
+
+        .color-grid { display: grid; grid-template-columns: repeat(7, 28px); gap: 8px; margin-bottom: 12px; }
+        .color-swatch { width: 28px; height: 28px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; transition: transform 0.1s; }
+        .color-swatch:hover { transform: scale(1.15); border-color: #a0aec0; z-index: 2; position: relative; }
+
+        .btn-copy {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: white; 
+            border: none; 
+            padding: 16px;
+            width: 100%; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            margin-top: auto; 
+            transition: all 0.3s; 
+            font-size: 14px; 
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(30, 90, 68, 0.3);
+        }
+        .btn-copy:hover { 
+            background: var(--accent-sun); 
+            box-shadow: 0 6px 20px rgba(244, 162, 54, 0.4);
+            transform: translateY(-2px);
+        }
+        .btn-copy.success { 
+            background: #48bb78; 
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+        }
+
+        /* --- PRAWY PANEL: PODGLĄD --- */
+        #email-preview { 
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+        
+        #copy-container {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        [contenteditable="true"]:focus {
+            outline: 2px dashed #cbd5e0;
+            outline-offset: 4px;
+            border-radius: 4px;
+            background-color: #fbfdfb;
+        }
+
+        /* Klasy wewnątrz maila (by wyglądały dobrze na skrzynkach pocztowych używamy styli w linii, ale klasy ułatwiają edycję wizualną tu w panelu) */
+        .mail-h3 { color: #1e5a44; font-size: 16px; margin: 25px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; font-weight: bold; }
+        .mail-p { margin: 5px 0; font-size: 14px; color: #333;}
+        .mail-table { width: 100%; border-collapse: collapse; margin: 15px 0; font-size: 14px; }
+        .mail-th { background-color: #f4f7f6; color: #1e5a44; padding: 10px; border: 1px solid #e2e8f0; font-weight: bold; text-align: center;}
+        .mail-td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: #333;}
+
+        @media (max-width: 1024px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            #admin-panel {
+                position: relative;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    
+    <div id="admin-panel">
+        <div class="top-nav">
+            <button onclick="history.back()" class="nav-btn">&laquo; Powrót</button>
+            <a href="index.html" class="nav-btn" title="Menu Główne">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg> Menu Główne
+            </a>
+        </div>
+
+        <div class="logo-container">
+            <img src="logo.png" alt="Logo Stowarzyszenia">
+        </div>
+
+        <div class="control-group">
+            <label>Nagłówek wiadomości (Powitanie)</label>
+            <input type="text" id="input-name" value="Szanowni Mieszkańcy," oninput="updatePreview()">
+        </div>
+
+        <div class="control-group" style="display:flex; flex-direction:column; flex-grow:1;">
+            <label>Formatowanie tabeli i tekstu (podgląd po prawej)</label>
+            <div class="editor-container">
+                <div id="editor" contenteditable="false">
+                    <br>Edycja treści, wyników i tabel <br>odbywa się bezpośrednio <br><b>w prawym panelu podglądu!</b><br>Po prostu kliknij w tekst po prawej stronie.
+                </div>
+                
+                <div class="gmail-toolbar">
+                    <button class="tool-bold" onmousedown="event.preventDefault()" onclick="execCmd('bold')" title="Pogrubienie">B</button>
+                    <button class="tool-italic" onmousedown="event.preventDefault()" onclick="execCmd('italic')" title="Kursywa">I</button>
+                    <button class="tool-underline" onmousedown="event.preventDefault()" onclick="execCmd('underline')" title="Podkreślenie">U</button>
+                    
+                    <div class="dropdown-container">
+                        <button class="dropdown-toggle" onmousedown="event.preventDefault()" onclick="toggleMenu('color-menu')" title="Kolor tekstu">
+                            <span style="font-weight:bold; border-bottom: 3px solid #000; padding-bottom: 2px;">A</span> ▼
+                        </button>
+                        <div id="color-menu" class="dropdown-menu">
+                            <div class="color-grid" id="color-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="btn-copy" id="copy-btn" onclick="copyEmail()">KOPIUJ TREŚĆ DO MAILA</button>
+    </div>
+
+    <div id="email-preview">
+        <div id="copy-container">
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f4f7f6; font-family: 'Segoe UI', Arial, sans-serif;">
+                <tr>
+                    <td align="center" style="padding: 30px 10px;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 650px; background-color: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+                            
+                            <tr>
+                                <td style="background-color: #1e5a44; padding: 25px 35px; text-align: center;">
+                                    <span style="color: #a3cfbb; font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; display: block; margin-bottom: 6px;">Oficjalne Wyniki Głosowania</span>
+                                    <h2 contenteditable="true" style="color: #ffffff; font-size: 18px; margin: 0; font-weight: 600; line-height: 1.4; display: inline-block;">Uchwała nr [NR/ROK] Stowarzyszenia</h2>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td style="padding: 30px 45px;">
+                                    <h1 id="view-name" style="font-size: 18px; color: #1a202c; margin: 0 0 20px 0; font-weight: 700;">Szanowni Mieszkańcy,</h1>
+                                    
+                                    <div id="view-content" contenteditable="true" style="font-size: 14px; color: #333333; line-height: 1.6; font-family: 'Segoe UI', Arial, sans-serif;">
+                                        
+                                        <p style="margin: 5px 0;">Poniżej przedstawiamy oficjalne wyniki głosowania członków Stowarzyszenia <strong>Mieszkańcy Południowych Ogrodów</strong> nad uchwałą z dnia <strong>[Data]</strong> r.</p>
+                                        <p style="margin: 5px 0 20px 0;"><strong>Przedmiot uchwały:</strong> [Wpisz krótko czego dotyczyło głosowanie, np. powołanie zarządu / zbiórka celowa]</p>
+
+                                        <h3 style="color: #1e5a44; font-size: 16px; margin: 25px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; font-weight: bold;">1. Informacje organizacyjne</h3>
+                                        <ul style="margin: 10px 0; padding-left: 20px; color: #333;">
+                                            <li><strong>Termin głosowania:</strong> od [Data rozpoczęcia] do [Data zakończenia]</li>
+                                            <li><strong>Forma głosowania:</strong> online (formularz elektroniczny / Google Forms)</li>
+                                            <li><strong>Podstawa:</strong> Zgodnie z regulaminem stowarzyszenia</li>
+                                        </ul>
+
+                                        <h3 style="color: #1e5a44; font-size: 16px; margin: 25px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; font-weight: bold;">2. Frekwencja i uprawnieni</h3>
+                                        <ul style="margin: 10px 0; padding-left: 20px; color: #333;">
+                                            <li>Liczba członków stowarzyszenia na dzień głosowania: <strong>[Wpisz]</strong></li>
+                                            <li>Liczba osób uprawnionych do oddania głosu: <strong>[Wpisz]</strong></li>
+                                            <li>Liczba faktycznie oddanych głosów: <strong>[Wpisz]</strong></li>
+                                        </ul>
+
+                                        <h3 style="color: #1e5a44; font-size: 16px; margin: 25px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; font-weight: bold;">3. Podsumowanie oddanych głosów</h3>
+                                        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin: 15px 0; border: 1px solid #e2e8f0;">
+                                            <tr>
+                                                <th style="background-color: #f4f7f6; color: #1e5a44; padding: 10px; border: 1px solid #e2e8f0; font-weight: bold; text-align: center;">ZA (TAK)</th>
+                                                <th style="background-color: #f4f7f6; color: #1e5a44; padding: 10px; border: 1px solid #e2e8f0; font-weight: bold; text-align: center;">PRZECIW (NIE)</th>
+                                                <th style="background-color: #f4f7f6; color: #1e5a44; padding: 10px; border: 1px solid #e2e8f0; font-weight: bold; text-align: center;">WSTRZYMAŁO SIĘ</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-size: 16px; font-weight: bold;">[Ilość]</td>
+                                                <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-size: 16px; font-weight: bold;">[Ilość]</td>
+                                                <td style="padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-size: 16px; font-weight: bold;">[Ilość]</td>
+                                            </tr>
+                                        </table>
+                                        
+                                        <div style="background-color: #e6f4ea; border-left: 4px solid #1e5a44; padding: 15px; margin: 15px 0; border-radius: 0 4px 4px 0;">
+                                            <p style="margin: 0; font-weight: 600; color: #1e5a44; font-size: 15px;">Decyzja: Uchwała nr [NR/ROK] została [PRZYJĘTA / ODRZUCONA] ze wsparciem [XX]% głosujących.</p>
+                                        </div>
+
+                                        <h3 style="color: #1e5a44; font-size: 16px; margin: 25px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; font-weight: bold;">4. Imienna lista głosujących</h3>
+                                        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse: collapse; margin: 15px 0; border: 1px solid #e2e8f0; font-size: 13px;">
+                                            <tr>
+                                                <th style="background-color: #f8fafc; color: #4a5568; padding: 8px; border: 1px solid #e2e8f0; text-align: left;">Imię i Nazwisko</th>
+                                                <th style="background-color: #f8fafc; color: #4a5568; padding: 8px; border: 1px solid #e2e8f0; text-align: center;">Nr domu/lokalu</th>
+                                                <th style="background-color: #f8fafc; color: #4a5568; padding: 8px; border: 1px solid #e2e8f0; text-align: center;">Oddany głos</th>
+                                                <th style="background-color: #f8fafc; color: #4a5568; padding: 8px; border: 1px solid #e2e8f0; text-align: center;">Data głosu</th>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0;">Jan Kowalski</td>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center;">12A</td>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; color: #1e5a44; font-weight: bold;">TAK</td>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; color: #718096;">[Data]</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0;">Anna Nowak</td>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center;">14</td>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; color: #c53030; font-weight: bold;">NIE</td>
+                                                <td style="padding: 8px; border: 1px solid #e2e8f0; text-align: center; color: #718096;">[Data]</td>
+                                            </tr>
+                                        </table>
+
+                                        <h3 style="color: #1e5a44; font-size: 16px; margin: 25px 0 10px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 5px; font-weight: bold;">5. Dokumentacja (Załączniki)</h3>
+                                        <ul style="margin: 10px 0; padding-left: 20px; color: #333;">
+                                            <li>Raport systemowy z formularza Google Forms</li>
+                                            <li>PDF z treścią przegłosowanej uchwały</li>
+                                            <li><a href="#" style="color: #3182ce; text-decoration: underline;">Protokół z głosowania (Link)</a></li>
+                                        </ul>
+
+                                        <p style="margin: 25px 0 10px 0; font-style: italic; color: #4a5568;">Niniejsze zestawienie potwierdza, że głosowanie zostało przeprowadzone z zachowaniem należytej staranności, transparentności oraz w zgodzie z obowiązującym regulaminem stowarzyszenia.</p>
+                                        
+                                        <p style="margin: 5px 0;"><strong>Zestawienie sporządził(a):</strong> [Imię i Nazwisko]</p>
+                                        <p style="margin: 5px 0;"><strong>Wyniki zatwierdził Zarząd w składzie:</strong> [Imiona i Nazwiska]</p>
+
+                                    </div>
+
+                                    <div id="view-footer" contenteditable="true" style="margin-top: 30px; padding-top: 25px; border-top: 1px solid #e2e8f0; font-size: 14px; color: #333333; line-height: 1.5; font-family: 'Segoe UI', Arial, sans-serif;">
+                                        <p style="margin: 0; color: #718096;">--</p>
+                                        <p style="margin: 4px 0 0 0; color: #718096;">Z poważaniem</p>
+                                        <p style="margin: 6px 0 0 0; font-weight: 600; color: #1a202c; font-size: 15px;">Zarząd Stowarzyszenia</p>
+                                        <p style="margin: 2px 0 0 0; color: #1e5a44; font-weight: 600;">Mieszkańcy Południowych Ogrodów</p>
+                                        <p style="margin: 4px 0 0 0;"><a href="mailto:mieszkancy.poludnioweogrody@gmail.com" style="color: #1e5a44; text-decoration: none;">mieszkancy.poludnioweogrody@gmail.com</a></p>
+                                        <p style="margin: 2px 0 0 0; color: #718096; font-size: 13px;">REGON: 544172895</p>
+                                    </div>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // System kolorów do paska narzędzi
+    const colors = ['#1e5a44', '#589a4b', '#f4a236', '#000', '#666', '#ccc', '#e69138', '#c53030'];
+    const colorGrid = document.getElementById('color-grid');
+    colors.forEach(color => {
+        const div = document.createElement('div');
+        div.className = 'color-swatch';
+        div.style.backgroundColor = color;
+        div.onmousedown = (e) => e.preventDefault();
+        div.onclick = () => {
+            document.execCommand('foreColor', false, color);
+            toggleMenu('color-menu'); 
+        };
+        colorGrid.appendChild(div);
+    });
+
+    function toggleMenu(menuId) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu.id !== menuId) menu.classList.remove('active');
+        });
+        document.getElementById(menuId).classList.toggle('active');
+    }
+
+    function execCmd(command, value = null) {
+        document.execCommand("styleWithCSS", false, true); 
+        document.execCommand(command, false, value);
+    }
+
+    function updatePreview() {
+        const name = document.getElementById('input-name').value;
+        let formattedName = name.trim();
+        if (formattedName && !formattedName.endsWith(',')) {
+            formattedName += ',';
+        }
+        document.getElementById('view-name').textContent = formattedName;
+    }
+
+    function copyEmail() {
+        const container = document.getElementById('copy-container');
+        const btn = document.getElementById('copy-btn');
+        
+        // Wyłączenie atrybutów contenteditable przed kopiowaniem
+        const editables = container.querySelectorAll('[contenteditable="true"]');
+        editables.forEach(el => el.removeAttribute('contenteditable'));
+
+        const range = document.createRange();
+        range.selectNode(container);
+        window.getSelection().removeAllRanges();
+        window.getSelection().addRange(range);
+
+        try {
+            const blob = new Blob([container.innerHTML], { type: 'text/html' });
+            const item = new ClipboardItem({ 'text/html': blob });
+            navigator.clipboard.write([item]).then(() => {
+                btn.textContent = '✅ SKOPIOWANO!';
+                btn.classList.add('success');
+                setTimeout(() => {
+                    btn.textContent = 'KOPIUJ TREŚĆ DO MAILA';
+                    btn.classList.remove('success');
+                }, 2000);
+            });
+        } catch (err) {
+            document.execCommand('copy');
+            btn.textContent = '✅ SKOPIOWANO!';
+            btn.classList.add('success');
+            setTimeout(() => {
+                btn.textContent = 'KOPIUJ TREŚĆ DO MAILA';
+                btn.classList.remove('success');
+            }, 2000);
+        }
+        
+        window.getSelection().removeAllRanges();
+        
+        // Włączenie atrybutów po kopiowaniu
+        editables.forEach(el => el.setAttribute('contenteditable', 'true'));
+    }
+
+    updatePreview();
+</script>
+
+</body>
+</html>
